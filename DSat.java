@@ -9,10 +9,10 @@ public class DSat {
     public static int largestColor;
     public static int[] order;
 
-    public static int run(){
+    public static int[] run(){
         largestColor = 0;
 
-        order = new int[graph.verticesNumber];
+        order = new int[graph.verticesNumber+1];
 
         for(int i=1; i<graph.emptyNodes.length;i++){
             node[graph.emptyNodes[i]].currentColor=1;
@@ -81,7 +81,7 @@ public class DSat {
 
             //System.out.println(" Working node is " + workingNode);
 
-            order[i-1] = workingNode;
+            order[i] = workingNode;
 
             int color = greedy(workingNode);
 
@@ -99,8 +99,9 @@ public class DSat {
             }
         }
 
-        System.out.println("The upper bound is " + largestColor + " as per the DSat version of the Greedy algorithm.");
-        return largestColor;
+        //System.out.println("The upper bound is " + largestColor + " as per the DSat version of the Greedy algorithm.");
+        order[0] = largestColor;
+        return order;
     }
 
     public static int greedy(int workingNode){
