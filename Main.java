@@ -217,13 +217,13 @@ public class Main {
 
         //BEGIN SETTING INITIAL BOUNDS
 
-        if ( graph.edgesNumber > 0 && graph.verticesNumber > 1 ) graph.lowerBound = 2; // if there's at least 1 edge and at least 2 nodes, the lowerbound is at least 2
-        if ( graph.edgesNumber == 0 && graph.verticesNumber > 0 ) graph.lowerBound = 1; // if there's no edges and at least 1 node, the lowerbound is 1
+        if ( graph.edgesNumber > 0 && graph.verticesNumber > 1 ) setLowerBound(2); // if there's at least 1 edge and at least 2 nodes, the lowerbound is at least 2
+        if ( graph.edgesNumber == 0 && graph.verticesNumber > 0 ) setLowerBound(1); // if there's no edges and at least 1 node, the lowerbound is 1
         int highestDegree = 0;
         for ( int x=1 ; x <= graph.verticesNumber ; x++) {
             if ( node[x].edgeCount > highestDegree ) highestDegree = node[x].edgeCount ;
         }
-        graph.upperBound = highestDegree + 1;
+        setUpperBound(highestDegree + 1);
 
         if(DEBUG) System.out.println(COMMENT + " The lowerbound is currently "+graph.lowerBound);
         if(DEBUG) System.out.println(COMMENT + " The upperbound is currently "+graph.upperBound);
@@ -240,14 +240,25 @@ public class Main {
         }
 
         //END PRINTING ALL EMPTY NODES
-    }
 
-    public static boolean checkBounds(){
-        if (graph.lowerBound == graph.upperBound) {
-            graph.chromaticNumber = graph.upperBound;
-            System.out.println("CHROMATIC NUMBER FOUND! IT'S "+graph.chromaticNumber);
-            return true;
-        } else  return false;
+        long timeStart = System.currentTimeMillis();
+
+        int[] dSatResult = DSat.run();
+        int dSatUpperBound = dSatResult[0];
+        setUpperBound(dSatUpperBound);
+
+        long time = System.currentTimeMillis()- timeStart;
+        System.out.println("Time: " + time + "ms");
+
+        int[] dSatOrder = new int[graph.verticesNumber];
+
+        for(int i = 0; i < graph.verticesNumber; i++){
+            dSatOrder[i] = dSatResult[i+1];
+        }
+
+        for(int i = 0; i < graph.verticesNumber; i++){
+            System.out.print(dSatOrder[i] + " ");
+        }
     }
 
     public static int getVtcs() {
@@ -266,4 +277,28 @@ public class Main {
         }
         return false;
     }
+
+    public static void setUpperBound(int bound){
+        graph.upperBound = bound;
+        System.out.println("NEW BEST UPPER BOUND = " + bound);
+        checkBounds();
+    }
+
+    public static void setLowerBound(int bound){
+        graph.lowerBound = bound;
+        System.out.println("NEW BEST LOWER BOUND = " + bound);
+        checkBounds();
+    }
+
+    public static void setChromaticNumber(int number){
+        graph.chromaticNumber = number;
+        System.out.println("CHROMATIC NUMBER = " + graph.chromaticNumber);
+    }
+
+    public static void checkBounds(){
+        if(graph.lowerBound == graph.upperBound){
+            setChromaticNumber(graph.upperBound);
+        }
+    }
+
 }
