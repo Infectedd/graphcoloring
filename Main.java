@@ -74,7 +74,10 @@ public class Main {
             //! -----------------------------------------
             while ((record = br.readLine()) != null)
             {
-                if( record.startsWith("//") ) continue;
+                if( record.startsWith("//") ){
+                    System.out.println(record);
+                    continue;
+                }
                 break; // Saw a line that did not start with a comment -- time to start reading the data in!
             }
 
@@ -244,6 +247,7 @@ public class Main {
         long timeStart = System.currentTimeMillis();
 
         int[] dSatResult = DSat.run();
+        clearColoring();
         int dSatUpperBound = dSatResult[0];
         setUpperBound(dSatUpperBound);
 
@@ -259,6 +263,8 @@ public class Main {
         for(int i = 0; i < graph.verticesNumber; i++){
             System.out.print(dSatOrder[i] + " ");
         }
+
+        TheGreedyGene.run(dSatOrder);
     }
 
     public static int getVtcs() {
@@ -298,6 +304,12 @@ public class Main {
     public static void checkBounds(){
         if(graph.lowerBound == graph.upperBound){
             setChromaticNumber(graph.upperBound);
+        }
+    }
+
+    public static void clearColoring(){
+        for(int i = 1; i <= graph.verticesNumber; i++ ){
+            node[i].currentColor = 0;
         }
     }
 
