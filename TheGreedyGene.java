@@ -24,8 +24,6 @@ public class TheGreedyGene {
 
         generateInitialPopulation(startingOrder);
 
-        System.out.println("Color " + node[3].currentColor);
-
         if(POPULATION_DEBUG) {
             System.out.println("\nPopulation generated: ");
 
