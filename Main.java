@@ -18,6 +18,7 @@ class Node {
 }
 
 class Graph {
+    int initialUpperBound;
     int upperBound;
     int lowerBound = 0; // when there are no nodes, the lowerbound is 0
     int chromaticNumber = -1; // -1 means no chromaticNumber yet
@@ -226,12 +227,25 @@ public class Main {
         for ( int x=1 ; x <= graph.verticesNumber ; x++) {
             if ( node[x].edgeCount > highestDegree ) highestDegree = node[x].edgeCount ;
         }
-        setUpperBound(highestDegree + 1);
+
+        graph.initialUpperBound = highestDegree + 1;
+        setUpperBound(graph.initialUpperBound);
 
         if(DEBUG) System.out.println(COMMENT + " The lowerbound is currently "+graph.lowerBound);
         if(DEBUG) System.out.println(COMMENT + " The upperbound is currently "+graph.upperBound);
 
         //END SETTING INITIAL BOUNDS
+
+        //BEGIN INITIALIZING CONNECTEDCOLORS
+
+        for(int i=1; i<=graph.verticesNumber; i++){ //initializes the connectedColors array for each vertex
+            node[i].connectedColors = new boolean[graph.upperBound];
+            for(int j=1; j<graph.upperBound; j++){
+                node[i].connectedColors[j] = false;
+            }
+        }
+
+        //END INITIALIZING CONNECTEDCOLORS
 
         //BEGIN PRINTING ALL EMPTY NODES
         if (DEBUG) {
@@ -251,8 +265,7 @@ public class Main {
         int dSatUpperBound = dSatResult[0];
         setUpperBound(dSatUpperBound);
 
-        long time = System.currentTimeMillis()- timeStart;
-        System.out.println("Time: " + time + "ms");
+        System.out.println("Time: " + (System.currentTimeMillis() - timeStart) + "ms");
 
         int[] dSatOrder = new int[graph.verticesNumber];
 
@@ -260,11 +273,10 @@ public class Main {
             dSatOrder[i] = dSatResult[i+1];
         }
 
-        for(int i = 0; i < graph.verticesNumber; i++){
-            System.out.print(dSatOrder[i] + " ");
-        }
-
         TheGreedyGene.run(dSatOrder);
+
+        //TheGreedyGene.run();
+
     }
 
     public static int getVtcs() {
@@ -308,8 +320,9 @@ public class Main {
     }
 
     public static void clearColoring(){
-        for(int i = 1; i <= graph.verticesNumber; i++ ){
+        for(int i = 1; i <= graph.verticesNumber; i++ ) {
             node[i].currentColor = 0;
+            node[i].connectedColors = new boolean[node[i].connectedColors.length];
         }
     }
 
