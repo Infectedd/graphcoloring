@@ -14,17 +14,14 @@ public class DSat {
 
         order = new int[graph.verticesNumber+1];
 
-        for(int i=1; i<graph.emptyNodes.length;i++){
+        int index = 1;
+
+        for(int i=0; i<graph.emptyNodes.length;i++){
             node[graph.emptyNodes[i]].currentColor=1;
+            order[index]=graph.emptyNodes[i];
+            index++;
             //System.out.println("Node "+ graph.emptyNodes[i] + " is empty and therefore received a color 1.");
             largestColor = 1;
-        }
-
-        for(int i=1; i<=graph.verticesNumber; i++){ //initializes the connectedColors array for each vertex
-            node[i].connectedColors = new boolean[graph.upperBound];
-            for(int j=1; j<graph.upperBound; j++){
-                node[i].connectedColors[j] = false;
-            }
         }
 
         for(int i=1; i<=graph.verticesNumber-graph.emptyNodes.length; i++){
@@ -35,7 +32,6 @@ public class DSat {
             int nodesWithMaxD[] = new int[graph.verticesNumber+1];
             int k=1;
             int l=1;
-            boolean unavailableColors[] = new boolean[graph.upperBound];
 
             for (int j=1; j<=graph.verticesNumber; j++){ //finds the largest DSat
                 if(node[j].currentColor==0){
@@ -71,7 +67,6 @@ public class DSat {
                     int dval = node[nodesWithMaxDSat[j]].edgeCount;
                     if(dval==currentMaxD){
                         nodesWithMaxD[l]=nodesWithMaxDSat[j];
-                        //System.out.println(" Added a new node to the list of maximum D nodes: " + nodesWithMaxD[l]);
                         l++;
                     }
                 }
@@ -81,7 +76,8 @@ public class DSat {
 
             //System.out.println(" Working node is " + workingNode);
 
-            order[i] = workingNode;
+            order[index] = workingNode;
+            index++;
 
             int color = greedy(workingNode);
 
@@ -98,21 +94,26 @@ public class DSat {
                 node[currentNeighborNode].saturationValue=counter;
             }
         }
-
-        //System.out.println("The upper bound is " + largestColor + " as per the DSat version of the Greedy algorithm.");
         order[0] = largestColor;
+        Main.clearColoring();
         return order;
     }
 
     public static int greedy(int workingNode){
-        for(int j=1; j<graph.upperBound && node[workingNode].currentColor==0; j++){
+
+        for(int j=1; j<=graph.initialUpperBound; j++){
             if(!node[workingNode].connectedColors[j]){
                 node[workingNode].currentColor=j;
-                if (DEBUG) System.out.println(" Node " + workingNode +  " with degree " + node[workingNode].edgeCount + " and degree of saturation " + node[workingNode].saturationValue + " just received color " + j);
-                return j;
+                break;
             }
         }
-        return 0;
+
+        for(int j = 0; j < node[workingNode].connectedNodes.length; j++){
+            int connectedNode = node[workingNode].connectedNodes[j];
+            node[connectedNode].connectedColors[node[workingNode].currentColor] = true;
+        }
+
+        return node[workingNode].currentColor;
     }
 }
 
