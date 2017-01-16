@@ -14,8 +14,12 @@ public class DSat {
 
         order = new int[graph.verticesNumber+1];
 
-        for(int i=1; i<graph.emptyNodes.length;i++){
+        int index = 1;
+
+        for(int i=0; i<graph.emptyNodes.length;i++){
             node[graph.emptyNodes[i]].currentColor=1;
+            order[index]=graph.emptyNodes[i];
+            index++;
             //System.out.println("Node "+ graph.emptyNodes[i] + " is empty and therefore received a color 1.");
             largestColor = 1;
         }
@@ -72,7 +76,8 @@ public class DSat {
 
             //System.out.println(" Working node is " + workingNode);
 
-            order[i] = workingNode;
+            order[index] = workingNode;
+            index++;
 
             int color = greedy(workingNode);
 
@@ -96,7 +101,7 @@ public class DSat {
 
     public static int greedy(int workingNode){
 
-        for(int j=1; j<graph.initialUpperBound; j++){
+        for(int j=1; j<=graph.initialUpperBound; j++){
             if(!node[workingNode].connectedColors[j]){
                 node[workingNode].currentColor=j;
                 break;

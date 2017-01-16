@@ -1,5 +1,7 @@
 package graphcol;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,7 +14,8 @@ public class TheGreedyGene {
 
     public final static boolean POPULATION_DEBUG = false;
     public final static boolean FITNESS_DEBUG = false;
-    public final static boolean CROSSOVER_DEBUG = true;
+    public final static boolean CROSSOVER_DEBUG = false;
+
     public final static boolean RUN_JUST_ONCE = true;
 
     public final static int POP_SIZE = 8;
@@ -42,8 +45,6 @@ public class TheGreedyGene {
             generationCount++;
             kill();
 
-            printPopulation();
-
             for(int i = 0; i < POP_SIZE; i++){
                 if(population[i] == null){
                     int parent1 = selectParent();
@@ -58,7 +59,7 @@ public class TheGreedyGene {
                     }
 
                     population[i] = crossOver(parent1, parent2);
-                    System.out.print(" to create individual " + i);
+                    if(CROSSOVER_DEBUG) System.out.print(" to create individual " + i);
                     /*
                     mutate();
                      */
@@ -143,6 +144,7 @@ public class TheGreedyGene {
         }
         if(largestCol < graph.upperBound){
             Main.setUpperBound(largestCol);
+            System.out.println("Upper bound set by GA");
             if(graph.chromaticNumber != -1) cont = false;
         }
         clearColoring();

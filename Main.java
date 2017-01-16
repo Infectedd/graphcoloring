@@ -26,6 +26,8 @@ class Graph {
     int edgesNumber = 0; // assuming the graph is empty
     int emptyNodesCount = 0; // assuming there are no empty nodes
     int emptyNodes[] = null; // assuming there are no empty nodes
+    int maxCliqueSize = -1; // no clique size found at the initialization
+    int[] maxClique = {};
 }
 
 public class Main {
@@ -63,7 +65,7 @@ public class Main {
 
         //BEGIN READING FILE
 
-        try 	{
+        try {
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
 
@@ -239,7 +241,7 @@ public class Main {
         //BEGIN INITIALIZING CONNECTEDCOLORS
 
         for(int i=1; i<=graph.verticesNumber; i++){ //initializes the connectedColors array for each vertex
-            node[i].connectedColors = new boolean[graph.upperBound];
+            node[i].connectedColors = new boolean[graph.upperBound + 1];
             for(int j=1; j<graph.upperBound; j++){
                 node[i].connectedColors[j] = false;
             }
@@ -275,7 +277,9 @@ public class Main {
 
         TheGreedyGene.run(dSatOrder);
 
-        //TheGreedyGene.run();
+        clearColoring();
+
+        graph.maxCliqueSize = BronKerbosch.maxClique();
 
     }
 
@@ -311,6 +315,7 @@ public class Main {
     public static void setChromaticNumber(int number){
         graph.chromaticNumber = number;
         System.out.println("CHROMATIC NUMBER = " + graph.chromaticNumber);
+        System.exit(0);
     }
 
     public static void checkBounds(){
