@@ -16,11 +16,11 @@ public class TheGreedyGene {
     public final static boolean FITNESS_DEBUG = false;
     public final static boolean CROSSOVER_DEBUG = false;
 
-    public final static boolean RUN_JUST_ONCE = true;
+    public final static boolean RUN_JUST_ONCE = false;
 
-    public final static int POP_SIZE = 8;
-    public final static double START_WITH_GIVEN_ORDER = 0.125;
-    public final static double KILL = 0.5;
+    public final static int POP_SIZE = 10;
+    public final static double START_WITH_GIVEN_ORDER = 0.1;
+    public final static double KILL = 0.4;
     public final static int MUTATION_RATE = 1;
 
     public static boolean cont = true;
@@ -60,9 +60,7 @@ public class TheGreedyGene {
 
                     population[i] = crossOver(parent1, parent2);
                     if(CROSSOVER_DEBUG) System.out.print(" to create individual " + i);
-                    /*
-                    mutate();
-                     */
+                    mutate(population[i]);
                 }
             }
             if(CROSSOVER_DEBUG) {
@@ -70,7 +68,10 @@ public class TheGreedyGene {
                 printPopulation();
             }
             if(RUN_JUST_ONCE) cont = false;
-            //calculateFitnessAll();
+
+            calculateFitnessAll();
+
+            if(generationCount%10000 == 0) System.out.println("Generation " + generationCount);
 
         }
     }
@@ -240,5 +241,31 @@ public class TheGreedyGene {
         }
 
         return child;
+    }
+
+    public static Individual mutate(Individual ind){
+        double chance = Math.random();
+        if(chance < MUTATION_RATE){
+            chance = Math.random();
+            int pos1 = (int) (chance*graph.verticesNumber);
+
+            chance=Math.random();
+            int pos2 = (int) (chance*graph.verticesNumber);
+
+            do{
+                if(pos1 == pos2){
+                    chance = Math.random();
+                    pos2 = (int) (chance*graph.verticesNumber);
+                }
+            } while (pos1 == pos2);
+
+            int temp;
+
+            temp = ind.ordering[pos1];
+            ind.ordering[pos1] = ind.ordering[pos2];
+            ind.ordering[pos2] = temp;
+        }
+
+        return ind;
     }
 }
