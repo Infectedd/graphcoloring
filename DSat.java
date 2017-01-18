@@ -56,14 +56,14 @@ public class DSat {
                     int dVal = node[nodesWithMaxDSat[j]].edgeCount;
 
                     if(dVal == currentMaxD){
-                        nodesWithMaxD[dIndex]=j;
+                        nodesWithMaxD[dIndex]=nodesWithMaxDSat[j];
                         dIndex++;
                     }
                     else if(dVal>currentMaxD){
                         currentMaxD=dVal;
                         nodesWithMaxD = new int[graph.verticesNumber+1];
                         dIndex=1;
-                        nodesWithMaxD[dIndex]=j;
+                        nodesWithMaxD[dIndex]=nodesWithMaxDSat[j];
                         dIndex++;
                     }
                 }
