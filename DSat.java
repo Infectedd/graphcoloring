@@ -13,68 +13,66 @@ public class DSat {
 
         order = new int[graph.verticesNumber+1];
 
-        int index = 1;
+        int orderIndex = 1;
 
         for(int i=0; i<graph.emptyNodes.length;i++){
             node[graph.emptyNodes[i]].currentColor=1;
-            order[index]=graph.emptyNodes[i];
-            index++;
+            order[orderIndex]=graph.emptyNodes[i];
+            orderIndex++;
             //System.out.println("Node "+ graph.emptyNodes[i] + " is empty and therefore received a color 1.");
             largestColor = 1;
         }
 
         for(int i=1; i<=graph.verticesNumber-graph.emptyNodes.length; i++){
-            //System.out.println("Run " + i);
+
             int currentMaxDSat = 0;
+            int[] nodesWithMaxDSat = new int[graph.verticesNumber+1];
+            int dSatIndex=1;
+
             int currentMaxD = 0;
-            int nodesWithMaxDSat[] = new int[graph.verticesNumber+1];
-            int nodesWithMaxD[] = new int[graph.verticesNumber+1];
-            int k=1;
-            int l=1;
+            int[] nodesWithMaxD = new int[graph.verticesNumber+1];
+            int dIndex=1;
 
             for (int j=1; j<=graph.verticesNumber; j++){ //finds the largest DSat
                 if(node[j].currentColor==0){
-                    int satval = node[j].saturationValue;
-                    if(satval>currentMaxDSat) {
-                        currentMaxDSat=satval;
-                        //System.out.println(" Found a new maximum DSat: " + satval);
+                    int dSatVal = node[j].saturationValue;
+
+                    if(dSatVal==currentMaxDSat){
+                        nodesWithMaxDSat[dSatIndex]=j;
+                        dSatIndex++;
+                    }
+                    else if(dSatVal>currentMaxDSat) {
+                        currentMaxDSat=dSatVal;
+                        nodesWithMaxDSat = new int[graph.verticesNumber+1];
+                        dSatIndex=1;
+                        nodesWithMaxDSat[dSatIndex]=j;
+                        dSatIndex++;
                     }
                 }
             }
 
-            for (int j=1; j<=graph.verticesNumber && k<=graph.verticesNumber; j++){ //adds all vertices with the largest DSat to an array
-                if(node[j].currentColor==0){
-                    int satval = node[j].saturationValue;
-                    if(satval==currentMaxDSat){
-                        nodesWithMaxDSat[k]=j;
-                        k++;
-                        //System.out.println("Added a new node to the list of maximum DSat nodes: " + j);
+            for (int j=1; j<dSatIndex; j++){
+                if(nodesWithMaxDSat[j]!=0){
+                    int dVal = node[nodesWithMaxDSat[j]].edgeCount;
+
+                    if(dVal == currentMaxD){
+                        nodesWithMaxD[dIndex]=j;
+                        dIndex++;
                     }
-                }
-            }
-
-            for (int j=1; j<=graph.verticesNumber; j++){
-                if(nodesWithMaxDSat[j]!=0){
-                    int dval = node[nodesWithMaxDSat[j]].edgeCount;
-                    if(dval>currentMaxD) currentMaxD=dval;
-                }
-
-            }
-
-            for (int j=1; j<=graph.verticesNumber && l<=graph.verticesNumber; j++){
-                if(nodesWithMaxDSat[j]!=0){
-                    int dval = node[nodesWithMaxDSat[j]].edgeCount;
-                    if(dval==currentMaxD){
-                        nodesWithMaxD[l]=nodesWithMaxDSat[j];
-                        l++;
+                    else if(dVal>currentMaxD){
+                        currentMaxD=dVal;
+                        nodesWithMaxD = new int[graph.verticesNumber+1];
+                        dIndex=1;
+                        nodesWithMaxD[dIndex]=j;
+                        dIndex++;
                     }
                 }
             }
 
             int workingNode = nodesWithMaxD[1];
 
-            order[index] = workingNode;
-            index++;
+            order[orderIndex] = workingNode;
+            orderIndex++;
 
             int color = greedy(workingNode);
 
@@ -96,9 +94,10 @@ public class DSat {
 
         for(int j = 0; j < node[workingNode].connectedNodes.length; j++){
             int connectedNode = node[workingNode].connectedNodes[j];
-            if(!node[connectedNode].connectedColors[node[workingNode].currentColor]) node[connectedNode].saturationValue++;
-
-            node[connectedNode].connectedColors[node[workingNode].currentColor] = true;
+            if(!node[connectedNode].connectedColors[node[workingNode].currentColor]){
+                node[connectedNode].saturationValue++;
+                node[connectedNode].connectedColors[node[workingNode].currentColor] = true;
+            }
         }
 
         return node[workingNode].currentColor;
