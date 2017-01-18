@@ -5,7 +5,6 @@ import static graphcol.Main.*;
 
 public class DSat {
 
-//problem - method has to return BOTH largestColor AND order - maybe put them in one array, with [0] holding largestColor?
     public static int largestColor;
     public static int[] order;
 
@@ -74,25 +73,12 @@ public class DSat {
 
             int workingNode = nodesWithMaxD[1];
 
-            //System.out.println(" Working node is " + workingNode);
-
             order[index] = workingNode;
             index++;
 
             int color = greedy(workingNode);
 
             if(color > largestColor) largestColor = color;
-
-            for(int jj=0; jj<node[workingNode].connectedNodes.length; jj++){
-                int currentNeighborNode = node[workingNode].connectedNodes[jj];
-                node[currentNeighborNode].connectedColors[color]=true;
-                //System.out.println(" Node " + currentNeighborNode + " is now connected to color " + j);
-                int counter=0;
-                for(int jjj=1; jjj<graph.upperBound; jjj++){
-                    if(node[currentNeighborNode].connectedColors[jjj]) counter++;
-                }
-                node[currentNeighborNode].saturationValue=counter;
-            }
         }
         order[0] = largestColor;
         Main.clearColoring();
@@ -110,10 +96,11 @@ public class DSat {
 
         for(int j = 0; j < node[workingNode].connectedNodes.length; j++){
             int connectedNode = node[workingNode].connectedNodes[j];
+            if(!node[connectedNode].connectedColors[node[workingNode].currentColor]) node[connectedNode].saturationValue++;
+
             node[connectedNode].connectedColors[node[workingNode].currentColor] = true;
         }
 
         return node[workingNode].currentColor;
     }
 }
-
