@@ -45,7 +45,12 @@ public class Main {
     //! create object graph
     public static Graph graph;
 
+    public static long timeStart;
+
     public static void main(String[] args) {
+
+        long timeStart = System.currentTimeMillis();
+
         //BEGIN PREPARING TO READ FILE
         if( args.length < 1 ) {
             System.out.println("Error! No filename specified.");
@@ -260,14 +265,17 @@ public class Main {
 
         //END PRINTING ALL EMPTY NODES
 
-        long timeStart = System.currentTimeMillis();
+        //System.out.println(" Initialization time: " + (System.currentTimeMillis() - timeStart) + "ms");
+
+        timeStart = System.currentTimeMillis();
 
         int[] dSatResult = DSat.run();
+
+        System.out.println(" DSat time: " + (System.currentTimeMillis() - timeStart) + "ms");
+
         clearColoring();
         int dSatUpperBound = dSatResult[0];
         setUpperBound(dSatUpperBound);
-
-        System.out.println("Time: " + (System.currentTimeMillis() - timeStart) + "ms");
 
         int[] dSatOrder = new int[graph.verticesNumber];
 
@@ -275,12 +283,19 @@ public class Main {
             dSatOrder[i] = dSatResult[i+1];
         }
 
-        TheGreedyGene.run(dSatOrder);
-
         clearColoring();
+
+        timeStart = System.currentTimeMillis();
 
         graph.maxCliqueSize = BronKerbosch.maxClique();
 
+        //System.out.println("Start time: " + timeStart);
+
+        //System.out.println(" B-K time: " + (System.currentTimeMillis() - timeStart) + "ms");
+
+        clearColoring();
+
+        TheGreedyGene.run(dSatOrder);
     }
 
     public static int getVtcs() {

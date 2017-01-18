@@ -2,6 +2,7 @@ package graphcol;
 
 import static graphcol.Main.graph;
 import static graphcol.Main.node;
+import static graphcol.Main.timeStart;
 
 public class BronKerbosch {
     //some array initialisation for the B-K algorithm
@@ -50,13 +51,35 @@ public class BronKerbosch {
             //System.out.println("New maximal clique with size " + r.length + " found!");
         if (p.length == 0 && x.length == 0 && r.length > graph.maxClique.length) {
             graph.maxClique = new int[r.length];
+
+            //System.out.println(" " + r.length + " is a new maximum clique! (at least for now)");
+            //System.out.println(" Clique time: " + (System.currentTimeMillis() - timeStart) + "ms");
+
             System.arraycopy(r, 0, graph.maxClique, 0, graph.maxClique.length);
             if(graph.lowerBound < r.length) Main.setLowerBound(r.length);
-            System.out.println(r.length + " is a new maximum clique! (at least for now)");
             return graph.maxClique;
         }
 
         // selecting the pivot vertex.
+
+        /*
+
+        int maxLength = 1; //MAKE THIS ONE
+
+        pivotVtx = -1;
+
+        if(p.length == 0 ) return graph.maxClique;
+        else{
+            for(int i = 0; i < p.length; i++){
+                if(node[p[i]].connectedNodes.length > maxLength){ //MAKE THIS LARGER THAN INSTEAD OF LARGER THAN OR EQUAL
+                    pivotVtx = p[i];
+                    maxLength = node[p[i]].connectedNodes.length;
+                }
+            }
+        }
+
+        if(pivotVtx == -1) return graph.maxClique;*/
+
         if (p.length > 0)
             pivotVtx = p[0];
         else
