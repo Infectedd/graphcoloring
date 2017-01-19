@@ -6,11 +6,6 @@ import static graphcol.Main.VERBOSE;
 import static graphcol.Main.graph;
 import static graphcol.Main.node;
 
-/**
- * Created by bvsla on 1/19/2017.
- */
-
-
 public class CycleFinder {
 
     static void findCycles(){
