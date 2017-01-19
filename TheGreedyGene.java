@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static graphcol.Main.clearColoring;
-import static graphcol.Main.graph;
-import static graphcol.Main.node;
+import static graphcol.Main.*;
 
 public class TheGreedyGene {
 
@@ -31,6 +29,7 @@ public class TheGreedyGene {
     public static ArrayList<Integer> allVertices;
 
     public static void run(int[] startingOrder){
+        timeGA = System.currentTimeMillis();
         initialize();
 
         generateInitialPopulation(startingOrder);
@@ -71,7 +70,7 @@ public class TheGreedyGene {
 
             calculateFitnessAll();
 
-            if(generationCount%10000 == 0) System.out.println("Generation " + generationCount);
+            if(generationCount%10000 == 0 && VERBOSE) System.out.println("  Generation " + generationCount);
 
         }
     }
@@ -145,7 +144,7 @@ public class TheGreedyGene {
         }
         if(largestCol < graph.upperBound){
             Main.setUpperBound(largestCol);
-            System.out.println("Upper bound set by GA");
+            if(VERBOSE) System.out.println(" Upper bound set by GA in " + (System.currentTimeMillis() - timeGA) + "ms");
             if(graph.chromaticNumber != -1) cont = false;
         }
         clearColoring();

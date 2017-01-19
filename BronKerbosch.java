@@ -1,12 +1,12 @@
 package graphcol;
 
-import static graphcol.Main.graph;
-import static graphcol.Main.node;
-import static graphcol.Main.timeStart;
+import static graphcol.Main.*;
 
 public class BronKerbosch {
     //some array initialisation for the B-K algorithm
+    static int timeIndex = 0;
     public static int maxClique() {
+        timeBK = System.currentTimeMillis();
         int[] np = new int[graph.verticesNumber]; //n for "new"
         for (int i = 0; i < graph.verticesNumber; i++) {
             np[i] = i + 1;
@@ -21,6 +21,7 @@ public class BronKerbosch {
 
     // method containing a variation the B-K algorithm for computing the maximum clique, from which the size is equal to the lowerbound of the graph.
     public static int[] bronKerbosch(int[] p, int[] r, int[] x) {
+
         int pivotVtx; // pivot vertex with the highest degree
 
 		/*
@@ -53,7 +54,7 @@ public class BronKerbosch {
             graph.maxClique = new int[r.length];
 
             //System.out.println(" " + r.length + " is a new maximum clique! (at least for now)");
-            //System.out.println(" Clique time: " + (System.currentTimeMillis() - timeStart) + "ms");
+            if(VERBOSE) System.out.println(" Clique time: " + (System.currentTimeMillis() - timeBK) + "ms");
 
             System.arraycopy(r, 0, graph.maxClique, 0, graph.maxClique.length);
             if(graph.lowerBound < r.length) Main.setLowerBound(r.length);
