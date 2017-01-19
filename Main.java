@@ -30,6 +30,12 @@ class Graph {
     int[] maxClique = {};
 }
 
+class Cycle {
+    int[] vertices;
+    int size;
+    boolean centralVertex;
+}
+
 public class Main {
 
     public final static boolean DEBUG = false;
@@ -45,11 +51,16 @@ public class Main {
     //! create object graph
     public static Graph graph;
 
-    public static long timeStart;
+    public static long timeGlobal;
+    public static long timeDSat;
+    public static long timeBK;
+    public static long timeGA;
+
+    public final static boolean VERBOSE = false;
 
     public static void main(String[] args) {
 
-        long timeStart = System.currentTimeMillis();
+        timeGlobal = System.currentTimeMillis();
 
         //BEGIN PREPARING TO READ FILE
         if( args.length < 1 ) {
@@ -265,13 +276,19 @@ public class Main {
 
         //END PRINTING ALL EMPTY NODES
 
-        //System.out.println(" Initialization time: " + (System.currentTimeMillis() - timeStart) + "ms");
+        if(VERBOSE) System.out.println(" Initialization time: " + (System.currentTimeMillis() - timeGlobal) + "ms");
 
-        timeStart = System.currentTimeMillis();
+        Thread ubThread = new Thread(new UpperBoundThread());
+        ubThread.start();
+
+        Thread lbThread = new Thread(new LowerBoundThread());
+        lbThread.start();
+
+        /*timeDSat = System.currentTimeMillis();
 
         int[] dSatResult = DSat.run();
 
-        System.out.println(" DSat time: " + (System.currentTimeMillis() - timeStart) + "ms");
+        System.out.println(" DSat time: " + (System.currentTimeMillis() - timeDSat) + "ms");
 
         clearColoring();
         int dSatUpperBound = dSatResult[0];
@@ -285,17 +302,15 @@ public class Main {
 
         clearColoring();
 
-        timeStart = System.currentTimeMillis();
-
         graph.maxCliqueSize = BronKerbosch.maxClique();
 
-        //System.out.println("Start time: " + timeStart);
+        //System.out.println("Start time: " + timeGlobal);
 
-        //System.out.println(" B-K time: " + (System.currentTimeMillis() - timeStart) + "ms");
+        //System.out.println(" B-K time: " + (System.currentTimeMillis() - timeGlobal) + "ms");
 
         clearColoring();
 
-        TheGreedyGene.run(dSatOrder);
+        TheGreedyGene.run(dSatOrder);*/
     }
 
     public static int getVtcs() {
@@ -330,6 +345,7 @@ public class Main {
     public static void setChromaticNumber(int number){
         graph.chromaticNumber = number;
         System.out.println("CHROMATIC NUMBER = " + graph.chromaticNumber);
+        System.out.println(" Total time: " + (System.currentTimeMillis() - timeGlobal) + "ms");
         System.exit(0);
     }
 
