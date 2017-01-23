@@ -56,7 +56,7 @@ public class Main {
     public static long timeBK;
     public static long timeGA;
 
-    public final static boolean VERBOSE = false;
+    public final static boolean VERBOSE = true;
 
     public static void main(String[] args) {
 

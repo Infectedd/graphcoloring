@@ -20,6 +20,10 @@ public class UpperBoundThread extends Thread{
 
         int[] dSatOrder = new int[graph.verticesNumber];
 
+        if(dSatUpperBound > 2){
+            Main.setLowerBound(3);
+        }
+
         for(int i = 0; i < graph.verticesNumber; i++){
             dSatOrder[i] = dSatResult[i+1];
         }
