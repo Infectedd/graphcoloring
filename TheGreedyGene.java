@@ -145,6 +145,8 @@ public class TheGreedyGene {
         if(largestCol < graph.upperBound){
             Main.setUpperBound(largestCol);
             if(VERBOSE) System.out.println(" Upper bound set by GA in " + (System.currentTimeMillis() - timeGA) + "ms");
+            if(VERBOSE) System.out.println(" Total time (GA): " + (System.currentTimeMillis() - timeGlobal) + "ms");
+
             if(graph.chromaticNumber != -1) cont = false;
         }
         clearColoring();
